@@ -848,4 +848,7 @@
   "com_ui_zoom": "Zoom",
   "com_user_message": "You",
   "com_warning_resubmit_unsupported": "Resubmitting the AI message is not supported for this endpoint."
+  "com_agents_showcase_heading": "Select an agent to start chatting",
+  "com_agents_showcase_none": "No agents available.",
 }
+

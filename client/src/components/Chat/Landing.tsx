@@ -14,6 +14,7 @@ import { useLocalize, useSubmitMessage } from '~/hooks';
 import { TooltipAnchor } from '~/components/ui';
 import { BirthdayIcon } from '~/components/svg';
 import ConvoStarter from './ConvoStarter';
+import AgentShowcase from '~/components/Agents/AgentShowcase';
 
 export default function Landing({ Header }: { Header?: ReactNode }) {
   const { conversation } = useChatContext();
@@ -146,6 +147,10 @@ export default function Landing({ Header }: { Header?: ReactNode }) {
                 />
               ))}
         </div>
+        <h2 className="mt-10 text-lg font-semibold text-text-primary">
+          {localize('com_agents_showcase_heading')}
+        </h2>
+        <AgentShowcase />
       </div>
     </div>
   );

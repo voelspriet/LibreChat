@@ -35,6 +35,8 @@ import StopButton from './StopButton';
 import SendButton from './SendButton';
 import Mention from './Mention';
 import store from '~/store';
+import { useAuthContext } from '~/hooks';
+import { SystemRoles } from 'librechat-data-provider';
 
 const ChatForm = ({ index = 0 }) => {
   const submitButtonRef = useRef<HTMLButtonElement>(null);
@@ -49,6 +51,8 @@ const ChatForm = ({ index = 0 }) => {
   const automaticPlayback = useRecoilValue(store.automaticPlayback);
   const maximizeChatSpace = useRecoilValue(store.maximizeChatSpace);
   const [isTemporaryChat, setIsTemporaryChat] = useRecoilState<boolean>(store.isTemporary);
+
+  const { user } = useAuthContext();
 
   const isSearching = useRecoilValue(store.isSearching);
   const [showStopButton, setShowStopButton] = useRecoilState(store.showStopButtonByIndex(index));
@@ -184,10 +188,12 @@ const ChatForm = ({ index = 0 }) => {
           )}
           <PromptsCommand index={index} textAreaRef={textAreaRef} submitPrompt={submitPrompt} />
           <div className="transitional-all relative flex w-full flex-grow flex-col overflow-hidden rounded-3xl bg-surface-tertiary text-text-primary duration-200">
-            <TemporaryChat
-              isTemporaryChat={isTemporaryChat}
-              setIsTemporaryChat={setIsTemporaryChat}
-            />
+            {user?.role === SystemRoles.ADMIN && (
+              <TemporaryChat
+                isTemporaryChat={isTemporaryChat}
+                setIsTemporaryChat={setIsTemporaryChat}
+              />
+            )}
             <TextareaHeader addedConvo={addedConvo} setAddedConvo={setAddedConvo} />
             <FileFormWrapper disableInputs={disableInputs}>
               {endpoint && (

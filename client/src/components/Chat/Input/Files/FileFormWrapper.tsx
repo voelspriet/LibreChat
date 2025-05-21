@@ -8,6 +8,8 @@ import {
   fileConfig as defaultFileConfig,
 } from 'librechat-data-provider';
 import { useGetFileConfig } from '~/data-provider';
+import { SystemRoles } from 'librechat-data-provider';
+import { useAuthContext } from '~/hooks';
 import AttachFileMenu from './AttachFileMenu';
 import { useChatContext } from '~/Providers';
 import { useFileHandling } from '~/hooks';
@@ -26,6 +28,7 @@ function FileFormWrapper({
   const { files, setFiles, conversation, setFilesLoading } = useChatContext();
   const { endpoint: _endpoint, endpointType } = conversation ?? { endpoint: null };
   const isAgents = useMemo(() => isAgentsEndpoint(_endpoint), [_endpoint]);
+  const { user } = useAuthContext();
 
   const { handleFileChange, abortUpload } = useFileHandling();
 
@@ -43,6 +46,9 @@ function FileFormWrapper({
   const isUploadDisabled = (disableInputs || endpointFileConfig?.disabled) ?? false;
 
   const renderAttachFile = () => {
+    if (user?.role !== SystemRoles.ADMIN) {
+      return null;
+    }
     if (isAgents) {
       return (
         <AttachFileMenu
