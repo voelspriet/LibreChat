@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import TagManager from 'react-gtm-module';
 import { useRecoilState, useSetRecoilState } from 'recoil';
-import { LocalStorageKeys } from 'librechat-data-provider';
+import { LocalStorageKeys, applyAgentsStandalone } from 'librechat-data-provider';
 import { useAvailablePluginsQuery } from 'librechat-data-provider/react-query';
 import type { TStartupConfig, TPlugin, TUser } from 'librechat-data-provider';
 import { mapPlugins, selectPlugins, processPlugins } from '~/utils';
@@ -30,6 +30,13 @@ export default function useAppStartup({
     enabled: !!user?.plugins,
     select: selectPlugins,
   });
+
+  /**
+   * Apply agentsStandalone setting to shared endpoint names
+   */
+  useEffect(() => {
+    applyAgentsStandalone(startupConfig?.interface?.agentsStandalone);
+  }, [startupConfig?.interface?.agentsStandalone]);
 
   /** Set the app title */
   useEffect(() => {
