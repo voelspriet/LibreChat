@@ -37,6 +37,8 @@ export const useEndpoints = ({
   const { data: endpoints = [] } = useGetEndpointsQuery({ select: mapEndpoints });
   const { instanceProjectId } = startupConfig ?? {};
   const interfaceConfig = startupConfig?.interface ?? {};
+  // When enabled, each agent will be exposed as its own endpoint
+  // instead of showing a grouped "Agents" entry.
   const agentsStandalone = !!interfaceConfig.agentsStandalone;
   const includedEndpoints = useMemo(
     () => new Set(startupConfig?.modelSpecs?.addedEndpoints ?? []),
