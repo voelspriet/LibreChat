@@ -5,6 +5,11 @@ export interface Endpoint {
   value: string;
   label: string;
   hasModels: boolean;
+  /**
+   * When set, represents a standalone agent associated with this endpoint.
+   * Selecting the endpoint should automatically select this agent id.
+   */
+  agentId?: string;
   models?: Array<{ name: string; isGlobal?: boolean }>;
   icon: React.ReactNode;
   agentNames?: Record<string, string>;
