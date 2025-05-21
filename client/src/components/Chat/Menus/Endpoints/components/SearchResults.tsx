@@ -100,8 +100,8 @@ export function SearchResults({ results, localize, searchValue }: SearchResultsP
           if (endpoint.agentId) {
             return (
               <MenuItem
-                key={`endpoint-${endpoint.value}-search-item`}
-                onClick={() => handleSelectModel(endpoint, endpoint.agentId!)}
+                key={`endpoint-${endpoint.value}-${endpoint.agentId}-search-item`}
+                onClick={() => handleSelectModel(endpoint, endpoint.agentId)}
                 className="flex w-full cursor-pointer items-center justify-between rounded-xl px-3 py-2 text-sm"
               >
                 <div className="flex items-center gap-2">
@@ -236,7 +236,11 @@ export function SearchResults({ results, localize, searchValue }: SearchResultsP
             return (
               <MenuItem
                 key={`endpoint-${endpoint.value}${endpoint.agentId ? `-${endpoint.agentId}` : ''}-search-item`}
-                onClick={() => handleSelectEndpoint(endpoint)}
+                onClick={() =>
+                  endpoint.agentId
+                    ? handleSelectModel(endpoint, endpoint.agentId)
+                    : handleSelectEndpoint(endpoint)
+                }
                 className="flex w-full cursor-pointer items-center justify-between rounded-xl px-3 py-2 text-sm"
               >
                 <div className="flex items-center gap-2">

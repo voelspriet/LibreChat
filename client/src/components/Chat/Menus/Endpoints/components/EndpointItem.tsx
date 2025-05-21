@@ -102,9 +102,9 @@ export function EndpointItem({ endpoint }: EndpointItemProps) {
   if (endpoint.agentId) {
     return (
       <MenuItem
-        id={`endpoint-${endpoint.value}-menu`}
-        key={`endpoint-${endpoint.value}-item`}
-        onClick={() => handleSelectModel(endpoint, endpoint.agentId!)}
+        id={`endpoint-${endpoint.value}-${endpoint.agentId}-menu`}
+        key={`endpoint-${endpoint.value}-${endpoint.agentId}-item`}
+        onClick={() => handleSelectModel(endpoint, endpoint.agentId)}
         className="flex h-8 w-full cursor-pointer items-center justify-between rounded-xl px-3 py-2 text-sm"
       >
         <div className="group flex w-full min-w-0 items-center justify-between">
