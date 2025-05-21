@@ -13,6 +13,7 @@ import TermsAndConditionsModal from '~/components/ui/TermsAndConditionsModal';
 import { useUserTermsQuery, useGetStartupConfig } from '~/data-provider';
 import { Nav, MobileNav } from '~/components/Nav';
 import { Banner } from '~/components/Banners';
+import { SystemRoles } from 'librechat-data-provider';
 
 export default function Root() {
   const [showTerms, setShowTerms] = useState(false);
@@ -22,7 +23,7 @@ export default function Root() {
     return savedNavVisible !== null ? JSON.parse(savedNavVisible) : true;
   });
 
-  const { isAuthenticated, logout } = useAuthContext();
+  const { isAuthenticated, logout, user } = useAuthContext();
   const assistantsMap = useAssistantsMap({ isAuthenticated });
   const agentsMap = useAgentsMap({ isAuthenticated });
   const fileMap = useFileMap({ isAuthenticated });
@@ -62,9 +63,13 @@ export default function Root() {
               <Banner onHeightChange={setBannerHeight} />
               <div className="flex" style={{ height: `calc(100dvh - ${bannerHeight}px)` }}>
                 <div className="relative z-0 flex h-full w-full overflow-hidden">
-                  <Nav navVisible={navVisible} setNavVisible={setNavVisible} />
+                  {user?.role === SystemRoles.ADMIN && (
+                    <Nav navVisible={navVisible} setNavVisible={setNavVisible} />
+                  )}
                   <div className="relative flex h-full max-w-full flex-1 flex-col overflow-hidden">
-                    <MobileNav setNavVisible={setNavVisible} />
+                    {user?.role === SystemRoles.ADMIN && (
+                      <MobileNav setNavVisible={setNavVisible} />
+                    )}
                     <Outlet context={{ navVisible, setNavVisible } satisfies ContextType} />
                   </div>
                 </div>

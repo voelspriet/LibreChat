@@ -1,12 +1,12 @@
 import { useState, useRef, useCallback, useEffect, useMemo, memo } from 'react';
 import throttle from 'lodash/throttle';
 import { useRecoilValue } from 'recoil';
-import { getConfigDefaults } from 'librechat-data-provider';
+import { getConfigDefaults, SystemRoles } from 'librechat-data-provider';
 import type { ImperativePanelHandle } from 'react-resizable-panels';
 import { ResizableHandleAlt, ResizablePanel, ResizablePanelGroup } from '~/components/ui/Resizable';
 import { useGetStartupConfig } from '~/data-provider';
 import { normalizeLayout } from '~/utils';
-import { useMediaQuery } from '~/hooks';
+import { useMediaQuery, useAuthContext } from '~/hooks';
 import SidePanel from './SidePanel';
 import store from '~/store';
 
@@ -35,6 +35,8 @@ const SidePanelGroup = ({
     () => startupConfig?.interface ?? defaultInterface,
     [startupConfig],
   );
+
+  const { user } = useAuthContext();
 
   const panelRef = useRef<ImperativePanelHandle>(null);
   const [minSize, setMinSize] = useState(defaultMinSize);
@@ -114,7 +116,7 @@ const SidePanelGroup = ({
             </ResizablePanel>
           </>
         )}
-        {!hideSidePanel && interfaceConfig.sidePanel === true && (
+        {!hideSidePanel && interfaceConfig.sidePanel === true && user?.role === SystemRoles.ADMIN && (
           <SidePanel
             panelRef={panelRef}
             minSize={minSize}
@@ -131,20 +133,22 @@ const SidePanelGroup = ({
           />
         )}
       </ResizablePanelGroup>
-      <button
-        aria-label="Close right side panel"
-        className={`nav-mask ${!isCollapsed ? 'active' : ''}`}
-        onClick={() => {
-          setIsCollapsed(() => {
-            localStorage.setItem('fullPanelCollapse', 'true');
-            setFullCollapse(true);
-            setCollapsedSize(0);
-            setMinSize(0);
-            return false;
-          });
-          panelRef.current?.collapse();
-        }}
-      />
+      {user?.role === SystemRoles.ADMIN && (
+        <button
+          aria-label="Close right side panel"
+          className={`nav-mask ${!isCollapsed ? 'active' : ''}`}
+          onClick={() => {
+            setIsCollapsed(() => {
+              localStorage.setItem('fullPanelCollapse', 'true');
+              setFullCollapse(true);
+              setCollapsedSize(0);
+              setMinSize(0);
+              return false;
+            });
+            panelRef.current?.collapse();
+          }}
+        />
+      )}
     </>
   );
 };

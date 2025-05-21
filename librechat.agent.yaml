@@ -1,0 +1,18 @@
+version: 1.2.1
+interface:
+  endpointsMenu: false
+  modelSelect: false
+  parameters: false
+  sidePanel: true
+  presets: false
+  prompts: false
+  bookmarks: false
+  multiConvo: false
+  agents: true
+  agentsStandalone: true
+  temporaryChat: false
+  runCode: false
+fileConfig:
+  endpoints:
+    agents:
+      disabled: true
