@@ -245,4 +245,22 @@ describe('loadDefaultInterface', () => {
       [PermissionTypes.RUN_CODE]: { [Permissions.USE]: undefined },
     });
   });
+
+  it('should return agentsStandalone true when set in config', async () => {
+    const config = { interface: { agentsStandalone: true } };
+    const configDefaults = { interface: { agentsStandalone: false } };
+
+    const result = await loadDefaultInterface(config, configDefaults);
+
+    expect(result.agentsStandalone).toBe(true);
+  });
+
+  it('should default agentsStandalone to false when not specified', async () => {
+    const config = { interface: {} };
+    const configDefaults = { interface: { agentsStandalone: false } };
+
+    const result = await loadDefaultInterface(config, configDefaults);
+
+    expect(result.agentsStandalone).toBe(false);
+  });
 });
