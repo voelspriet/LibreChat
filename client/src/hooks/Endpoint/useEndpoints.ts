@@ -37,6 +37,7 @@ export const useEndpoints = ({
   const { data: endpoints = [] } = useGetEndpointsQuery({ select: mapEndpoints });
   const { instanceProjectId } = startupConfig ?? {};
   const interfaceConfig = startupConfig?.interface ?? {};
+  const agentsStandalone = !!interfaceConfig.agentsStandalone;
   const includedEndpoints = useMemo(
     () => new Set(startupConfig?.modelSpecs?.addedEndpoints ?? []),
     [startupConfig?.modelSpecs?.addedEndpoints],
@@ -94,35 +95,54 @@ export const useEndpoints = ({
   );
 
   const mappedEndpoints: Endpoint[] = useMemo(() => {
-    return filteredEndpoints.map((ep) => {
+    const mapped: Endpoint[] = [];
+    filteredEndpoints.forEach((ep) => {
       const endpointType = getEndpointField(endpointsConfig, ep, 'type');
       const iconKey = getIconKey({ endpoint: ep, endpointsConfig, endpointType });
       const Icon = icons[iconKey];
       const endpointIconURL = getEndpointField(endpointsConfig, ep, 'iconURL');
       const hasModels =
-        (ep === EModelEndpoint.agents && agents?.length > 0) ||
+        (ep === EModelEndpoint.agents && agents?.length > 0 && !agentsStandalone) ||
         (ep === EModelEndpoint.assistants && assistants?.length > 0) ||
         (ep !== EModelEndpoint.assistants &&
           ep !== EModelEndpoint.agents &&
           (modelsQuery.data?.[ep]?.length ?? 0) > 0);
 
-      // Base result object with formatted default icon
-      const result: Endpoint = {
-        value: ep,
-        label: alternateName[ep] || ep,
-        hasModels,
-        icon: Icon
-          ? React.createElement(Icon, {
-            size: 20,
-            className: 'text-text-primary shrink-0 icon-md',
-            iconURL: endpointIconURL,
-            endpoint: ep,
-          })
-          : null,
+      const baseIconProps = {
+        size: 20,
+        className: 'text-text-primary shrink-0 icon-md',
+        iconURL: endpointIconURL,
+        endpoint: ep,
       };
 
       // Handle agents case
       if (ep === EModelEndpoint.agents && agents.length > 0) {
+        if (agentsStandalone) {
+          agents.forEach((agent) => {
+            const icon = Icon
+              ? React.createElement(Icon, {
+                  ...baseIconProps,
+                  avatar: agent.avatar?.filepath,
+                  agentName: agent.name ?? '',
+                })
+              : null;
+            mapped.push({
+              value: ep,
+              label: agent.name ?? agent.id,
+              hasModels: false,
+              agentId: agent.id,
+              icon,
+            });
+          });
+          return;
+        }
+
+        const result: Endpoint = {
+          value: ep,
+          label: alternateName[ep] || ep,
+          hasModels,
+          icon: Icon ? React.createElement(Icon, baseIconProps) : null,
+        };
         result.models = agents.map((agent) => ({
           name: agent.id,
           isGlobal:
@@ -136,10 +156,18 @@ export const useEndpoints = ({
           acc[agent.id] = agent?.avatar?.filepath;
           return acc;
         }, {});
+        mapped.push(result);
+        return;
       }
 
       // Handle assistants case
       else if (ep === EModelEndpoint.assistants && assistants.length > 0) {
+        const result: Endpoint = {
+          value: ep,
+          label: alternateName[ep] || ep,
+          hasModels,
+          icon: Icon ? React.createElement(Icon, baseIconProps) : null,
+        };
         result.models = assistants.map((assistant: { id: string }) => ({
           name: assistant.id,
           isGlobal: false,
@@ -158,7 +186,15 @@ export const useEndpoints = ({
           },
           {},
         );
+        mapped.push(result);
+        return;
       } else if (ep === EModelEndpoint.azureAssistants && azureAssistants.length > 0) {
+        const result: Endpoint = {
+          value: ep,
+          label: alternateName[ep] || ep,
+          hasModels,
+          icon: Icon ? React.createElement(Icon, baseIconProps) : null,
+        };
         result.models = azureAssistants.map((assistant: { id: string }) => ({
           name: assistant.id,
           isGlobal: false,
@@ -177,6 +213,8 @@ export const useEndpoints = ({
           },
           {},
         );
+        mapped.push(result);
+        return;
       }
 
       // For other endpoints with models from the modelsQuery
@@ -185,15 +223,31 @@ export const useEndpoints = ({
         ep !== EModelEndpoint.assistants &&
         (modelsQuery.data?.[ep]?.length ?? 0) > 0
       ) {
+        const result: Endpoint = {
+          value: ep,
+          label: alternateName[ep] || ep,
+          hasModels,
+          icon: Icon ? React.createElement(Icon, baseIconProps) : null,
+        };
         result.models = modelsQuery.data?.[ep]?.map((model) => ({
           name: model,
           isGlobal: false,
         }));
+        mapped.push(result);
+        return;
+      } else {
+        const result: Endpoint = {
+          value: ep,
+          label: alternateName[ep] || ep,
+          hasModels,
+          icon: Icon ? React.createElement(Icon, baseIconProps) : null,
+        };
+        mapped.push(result);
+        return;
       }
-
-      return result;
     });
-  }, [filteredEndpoints, endpointsConfig, modelsQuery.data, agents, assistants]);
+    return mapped;
+  }, [filteredEndpoints, endpointsConfig, modelsQuery.data, agents, assistants, agentsStandalone]);
 
   return {
     mappedEndpoints,

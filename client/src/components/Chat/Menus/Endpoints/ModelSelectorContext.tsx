@@ -128,11 +128,18 @@ export function ModelSelectorProvider({ children, startupConfig }: ModelSelector
   const handleSelectEndpoint = (endpoint: Endpoint) => {
     if (!endpoint.hasModels) {
       if (endpoint.value) {
-        onSelectEndpoint?.(endpoint.value);
+        if (endpoint.agentId) {
+          onSelectEndpoint?.(endpoint.value, {
+            agent_id: endpoint.agentId,
+            model: agentsMap?.[endpoint.agentId]?.model ?? '',
+          });
+        } else {
+          onSelectEndpoint?.(endpoint.value);
+        }
       }
       setSelectedValues({
         endpoint: endpoint.value,
-        model: '',
+        model: endpoint.agentId ?? '',
         modelSpec: '',
       });
     }
