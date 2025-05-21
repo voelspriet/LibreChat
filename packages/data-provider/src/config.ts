@@ -464,7 +464,7 @@ const termsOfServiceSchema = z.object({
 
 export type TTermsOfService = z.infer<typeof termsOfServiceSchema>;
 
-export const intefaceSchema = z
+export const interfaceSchema = z
   .object({
     privacyPolicy: z
       .object({
@@ -502,7 +502,7 @@ export const intefaceSchema = z
     runCode: true,
   });
 
-export type TInterfaceConfig = z.infer<typeof intefaceSchema>;
+export type TInterfaceConfig = z.infer<typeof interfaceSchema>;
 export type TBalanceConfig = z.infer<typeof balanceSchema>;
 
 export type TStartupConfig = {
@@ -576,7 +576,7 @@ export const configSchema = z.object({
   includedTools: z.array(z.string()).optional(),
   filteredTools: z.array(z.string()).optional(),
   mcpServers: MCPServersSchema.optional(),
-  interface: intefaceSchema,
+  interface: interfaceSchema,
   fileStrategy: fileSourceSchema.default(FileSources.local),
   actions: z
     .object({
