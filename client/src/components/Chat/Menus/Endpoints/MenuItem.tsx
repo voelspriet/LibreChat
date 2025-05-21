@@ -18,6 +18,7 @@ type MenuItemProps = {
   selected: boolean;
   description?: string;
   userProvidesKey: boolean;
+  agentId?: string;
   // iconPath: string;
   // hoverContent?: string;
 };
@@ -28,6 +29,7 @@ const MenuItem: FC<MenuItemProps> = ({
   description,
   selected,
   userProvidesKey,
+  agentId,
   ...rest
 }) => {
   const modularChat = useRecoilValue(store.modularChat);
@@ -82,8 +84,14 @@ const MenuItem: FC<MenuItemProps> = ({
       });
       return;
     }
+    const convoTemplate: Partial<TConversation> = {
+      ...(template as Partial<TConversation>),
+    };
+    if (agentId) {
+      convoTemplate.agent_id = agentId;
+    }
     newConversation({
-      template: { ...(template as Partial<TConversation>) },
+      template: convoTemplate,
       keepAddedConvos: isModular,
     });
   };

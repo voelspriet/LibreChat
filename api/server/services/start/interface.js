@@ -33,6 +33,8 @@ async function loadDefaultInterface(config, configDefaults, roleName = SystemRol
     prompts: interfaceConfig?.prompts ?? defaults.prompts,
     multiConvo: interfaceConfig?.multiConvo ?? defaults.multiConvo,
     agents: interfaceConfig?.agents ?? defaults.agents,
+    agentsStandalone:
+      interfaceConfig?.agentsStandalone ?? defaults.agentsStandalone,
     temporaryChat: interfaceConfig?.temporaryChat ?? defaults.temporaryChat,
     runCode: interfaceConfig?.runCode ?? defaults.runCode,
     customWelcome: interfaceConfig?.customWelcome ?? defaults.customWelcome,

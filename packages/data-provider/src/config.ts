@@ -483,6 +483,7 @@ export const intefaceSchema = z
     presets: z.boolean().optional(),
     prompts: z.boolean().optional(),
     agents: z.boolean().optional(),
+    agentsStandalone: z.boolean().optional(),
     temporaryChat: z.boolean().optional(),
     runCode: z.boolean().optional(),
   })
@@ -496,6 +497,7 @@ export const intefaceSchema = z
     bookmarks: true,
     prompts: true,
     agents: true,
+    agentsStandalone: false,
     temporaryChat: true,
     runCode: true,
   });

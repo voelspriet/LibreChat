@@ -3,7 +3,7 @@ import { alternateName } from 'librechat-data-provider';
 import { Content, Portal, Root } from '@radix-ui/react-popover';
 import type { FC, KeyboardEvent } from 'react';
 import { useChatContext, useAgentsMapContext, useAssistantsMapContext } from '~/Providers';
-import { useGetEndpointsQuery } from '~/data-provider';
+import { useGetEndpointsQuery, useGetStartupConfig } from '~/data-provider';
 import { mapEndpoints, getEntity } from '~/utils';
 import EndpointItems from './Endpoints/MenuItems';
 import useLocalize from '~/hooks/useLocalize';
@@ -17,6 +17,7 @@ const EndpointsMenu: FC = () => {
   const localize = useLocalize();
   const agentsMap = useAgentsMapContext();
   const assistantMap = useAssistantsMapContext();
+  const { data: startupConfig } = useGetStartupConfig();
   const { conversation } = useChatContext();
   const { endpoint = '' } = conversation ?? {};
 
@@ -94,7 +95,13 @@ const EndpointsMenu: FC = () => {
             aria-label={localize('com_ui_endpoints_available')}
             className="mt-2 max-h-[65vh] min-w-[340px] overflow-y-auto rounded-lg border border-border-light bg-header-primary text-text-primary shadow-lg lg:max-h-[75vh]"
           >
-            <EndpointItems endpoints={endpoints} selected={endpoint} />
+            <EndpointItems
+              endpoints={endpoints}
+              selected={endpoint}
+              selectedAgentId={conversation?.agent_id}
+              agentsMap={agentsMap}
+              interfaceConfig={startupConfig?.interface}
+            />
           </Content>
         </div>
       </Portal>
