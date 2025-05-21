@@ -27,7 +27,7 @@ const SettingsButton = ({
   const text = localize('com_endpoint_config_key');
   return (
     <button
-      id={`endpoint-${endpoint.value}-settings`}
+      id={`endpoint-${endpoint.value}${endpoint.agentId ? `-${endpoint.agentId}` : ''}-settings`}
       onClick={(e) => {
         if (!endpoint.value) {
           return;
@@ -152,8 +152,8 @@ export function EndpointItem({ endpoint }: EndpointItemProps) {
         : localize('com_endpoint_search_endpoint_models', { 0: endpoint.label });
     return (
       <Menu
-        id={`endpoint-${endpoint.value}-menu`}
-        key={`endpoint-${endpoint.value}-item`}
+        id={`endpoint-${endpoint.value}${endpoint.agentId ? `-${endpoint.agentId}` : ''}-menu`}
+        key={`endpoint-${endpoint.value}${endpoint.agentId ? `-${endpoint.agentId}` : ''}-item`}
         className="transition-opacity duration-200 ease-in-out"
         defaultOpen={endpoint.value === selectedEndpoint}
         searchValue={searchValue}
@@ -185,8 +185,8 @@ export function EndpointItem({ endpoint }: EndpointItemProps) {
   } else {
     return (
       <MenuItem
-        id={`endpoint-${endpoint.value}-menu`}
-        key={`endpoint-${endpoint.value}-item`}
+        id={`endpoint-${endpoint.value}${endpoint.agentId ? `-${endpoint.agentId}` : ''}-menu`}
+        key={`endpoint-${endpoint.value}${endpoint.agentId ? `-${endpoint.agentId}` : ''}-item`}
         onClick={() => handleSelectEndpoint(endpoint)}
         className="flex h-8 w-full cursor-pointer items-center justify-between rounded-xl px-3 py-2 text-sm"
       >
@@ -196,7 +196,7 @@ export function EndpointItem({ endpoint }: EndpointItemProps) {
             {endpointRequiresUserKey(endpoint.value) && (
               <SettingsButton endpoint={endpoint} handleOpenKeyDialog={handleOpenKeyDialog} />
             )}
-            {selectedEndpoint === endpoint.value && (
+            {selectedEndpoint === endpoint.value && (!endpoint.agentId || selectedModel === endpoint.agentId) && (
               <svg
                 width="16"
                 height="16"
@@ -222,6 +222,9 @@ export function EndpointItem({ endpoint }: EndpointItemProps) {
 
 export function renderEndpoints(mappedEndpoints: Endpoint[]) {
   return mappedEndpoints.map((endpoint) => (
-    <EndpointItem endpoint={endpoint} key={`endpoint-${endpoint.value}-item`} />
+    <EndpointItem
+      endpoint={endpoint}
+      key={`endpoint-${endpoint.value}${endpoint.agentId ? `-${endpoint.agentId}` : ''}-item`}
+    />
   ));
 }

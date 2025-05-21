@@ -12,6 +12,7 @@ export interface Endpoint {
   agentId?: string;
   models?: Array<{ name: string; isGlobal?: boolean }>;
   icon: React.ReactNode;
+  agentId?: string;
   agentNames?: Record<string, string>;
   assistantNames?: Record<string, string>;
   modelIcons?: Record<string, string | undefined>;

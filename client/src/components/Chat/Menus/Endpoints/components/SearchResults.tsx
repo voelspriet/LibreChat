@@ -160,7 +160,7 @@ export function SearchResults({ results, localize, searchValue }: SearchResultsP
             }
 
             return (
-              <Fragment key={`endpoint-${endpoint.value}-search-${i}`}>
+              <Fragment key={`endpoint-${endpoint.value}${endpoint.agentId ? `-${endpoint.agentId}` : ''}-search-${i}`}>
                 <div className="flex items-center gap-2 px-3 py-1 text-sm font-medium">
                   {endpoint.icon && (
                     <div className="flex items-center justify-center overflow-hidden rounded-full p-1">
@@ -192,7 +192,7 @@ export function SearchResults({ results, localize, searchValue }: SearchResultsP
 
                   return (
                     <MenuItem
-                      key={`${endpoint.value}-${modelId}-search-${i}`}
+                      key={`${endpoint.value}-${endpoint.agentId ? `${endpoint.agentId}-` : ''}${modelId}-search-${i}`}
                       onClick={() => handleSelectModel(endpoint, modelId)}
                       className="flex w-full cursor-pointer items-center justify-start rounded-lg px-3 py-2 pl-6 text-sm"
                     >
@@ -235,7 +235,7 @@ export function SearchResults({ results, localize, searchValue }: SearchResultsP
             // Endpoints with no models
             return (
               <MenuItem
-                key={`endpoint-${endpoint.value}-search-item`}
+                key={`endpoint-${endpoint.value}${endpoint.agentId ? `-${endpoint.agentId}` : ''}-search-item`}
                 onClick={() => handleSelectEndpoint(endpoint)}
                 className="flex w-full cursor-pointer items-center justify-between rounded-xl px-3 py-2 text-sm"
               >
@@ -250,7 +250,7 @@ export function SearchResults({ results, localize, searchValue }: SearchResultsP
                   )}
                   <span>{endpoint.label}</span>
                 </div>
-                {selectedEndpoint === endpoint.value && (
+                {selectedEndpoint === endpoint.value && (!endpoint.agentId || selectedModel === endpoint.agentId) && (
                   <svg
                     width="16"
                     height="16"
