@@ -184,6 +184,10 @@ export const getDisplayValue = ({
       return localize('com_ui_select_model');
     }
 
+    if (endpoint.agentId && endpoint.agentId === selectedValues.model) {
+      return endpoint.label;
+    }
+
     if (
       isAgentsEndpoint(endpoint.value) &&
       endpoint.agentNames &&
