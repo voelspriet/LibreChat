@@ -137,6 +137,16 @@ Click on the thumbnail to open the video☝️
 
 ---
 
+## Getting Started
+
+- Clone the repository.
+- Copy `.env.example` to `.env` and adjust values.
+- (Optional) Copy `librechat.example.yaml` to `librechat.yaml`.
+- Run `npm ci` (or `npm run update`).
+- Build and start with `npm run backend` / `npm run frontend` or via Docker `docker compose up`.
+
+For detailed configuration, see [docs.librechat.ai](https://docs.librechat.ai).
+
 ## 🌐 Resources
 
 **GitHub Repo:**
