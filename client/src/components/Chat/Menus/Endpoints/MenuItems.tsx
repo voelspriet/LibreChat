@@ -12,10 +12,15 @@ import { getEndpointField } from '~/utils';
 import { useHasAccess } from '~/hooks';
 import MenuItem from './MenuItem';
 
+import type { TAgentsMap, TInterfaceConfig } from 'librechat-data-provider';
+
 const EndpointItems: FC<{
   endpoints: Array<EModelEndpoint | undefined>;
   selected: EModelEndpoint | '';
-}> = ({ endpoints = [], selected }) => {
+  selectedAgentId?: string;
+  agentsMap?: TAgentsMap;
+  interfaceConfig?: Partial<TInterfaceConfig>;
+}> = ({ endpoints = [], selected, selectedAgentId, agentsMap, interfaceConfig }) => {
   const hasAccessToAgents = useHasAccess({
     permissionType: PermissionTypes.AGENTS,
     permission: Permissions.USE,
@@ -33,8 +38,38 @@ const EndpointItems: FC<{
         if (endpoint === EModelEndpoint.agents && !hasAccessToAgents) {
           return null;
         }
+
         const userProvidesKey: boolean | null | undefined =
           getEndpointField(endpointsConfig, endpoint, 'userProvide') ?? false;
+
+        if (
+          endpoint === EModelEndpoint.agents &&
+          interfaceConfig?.agentsStandalone === true &&
+          agentsMap
+        ) {
+          const agents = Object.values(agentsMap);
+          return agents.map((agent, j) => (
+            <Close asChild key={`endpoint-${agent.id}`}>
+              <div key={`endpoint-${agent.id}`}>
+                <MenuItem
+                  key={`endpoint-item-${agent.id}`}
+                  title={agent.name}
+                  value={endpoint}
+                  agentId={agent.id}
+                  selected={
+                    selected === endpoint && selectedAgentId === agent.id
+                  }
+                  data-testid={`endpoint-item-${agent.id}`}
+                  userProvidesKey={!!userProvidesKey}
+                />
+                {i !== endpoints.length - 1 || j !== agents.length - 1 ? (
+                  <MenuSeparator />
+                ) : null}
+              </div>
+            </Close>
+          ));
+        }
+
         return (
           <Close asChild key={`endpoint-${endpoint}`}>
             <div key={`endpoint-${endpoint}`}>
@@ -45,7 +80,6 @@ const EndpointItems: FC<{
                 selected={selected === endpoint}
                 data-testid={`endpoint-item-${endpoint}`}
                 userProvidesKey={!!userProvidesKey}
-                // description="With DALL·E, browsing and analysis"
               />
               {i !== endpoints.length - 1 && <MenuSeparator />}
             </div>
